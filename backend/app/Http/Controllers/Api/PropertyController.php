@@ -14,6 +14,7 @@ class PropertyController extends Controller
     {
         return response()->json([
             'data' => $this->propertyService->list(),
+            'message' => '物件一覧を取得しました。',
         ]);
     }
 }
