@@ -20,4 +20,9 @@ class Property extends Model
     protected $casts = [
         'is_corner' => 'boolean',
     ];
+
+    public function scopeCorner($query)
+    {
+        return $query->where('is_corner', true);
+    }
 }

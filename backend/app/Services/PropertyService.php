@@ -9,6 +9,7 @@ class PropertyService
     public function list(): array
     {
         return Property::query()
+            ->corner()
             ->orderByDesc('id')
             ->get()
             ->toArray();
