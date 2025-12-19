@@ -6,10 +6,15 @@ use App\Models\Property;
 
 class PropertyService
 {
-    public function list(): array
+    public function list(bool $onlyCorner = true): array
     {
-        return Property::query()
-            ->corner()
+        $query = Property::query();
+
+        if ($onlyCorner) {
+            $query->corner();
+        }
+
+        return $query
             ->orderByDesc('id')
             ->get()
             ->toArray();
