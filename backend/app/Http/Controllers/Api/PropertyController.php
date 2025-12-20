@@ -13,10 +13,13 @@ class PropertyController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $onlyCorner = $request->boolean('corner');
+        $filters = [
+            'corner' => $request->boolean('corner'),
+            'min_sunlight' => $request->integer('min_sunlight') ?: null,
+        ];
 
         return response()->json([
-            'data' => $this->propertyService->list($onlyCorner),
+            'data' => $this->propertyService->list($filters),
             'message' => '物件一覧を取得しました。',
         ]);
     }

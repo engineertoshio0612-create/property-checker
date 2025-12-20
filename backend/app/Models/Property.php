@@ -25,4 +25,10 @@ class Property extends Model
     {
         return $query->where('is_corner', true);
     }
+
+    public function scopeMinSunlight($query, int $min)
+    {
+        return $query->where('sunlight_score', '>=', $min);
+    }
+
 }

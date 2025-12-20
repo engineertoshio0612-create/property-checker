@@ -6,12 +6,16 @@ use App\Models\Property;
 
 class PropertyService
 {
-    public function list(bool $onlyCorner = true): array
+    public function list(array $filters = []): array
     {
         $query = Property::query();
 
-        if ($onlyCorner) {
+        if (!empty($filters['corner'])) {
             $query->corner();
+        }
+
+        if (!empty($filters['min_sunlight'])) {
+            $query->minSunlight((int) $filters['min_sunlight']);
         }
 
         return $query
