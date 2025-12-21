@@ -6,7 +6,7 @@ use App\Models\Property;
 
 class PropertyService
 {
-    public function list(array $filters = []): array
+    public function list(array $filters = [])
     {
         $query = Property::query();
 
@@ -20,7 +20,6 @@ class PropertyService
 
         return $query
             ->orderByDesc('id')
-            ->get()
-            ->toArray();
+            ->get();
     }
 }

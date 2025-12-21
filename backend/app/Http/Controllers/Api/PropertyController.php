@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PropertyResource;
 use App\Services\PropertyService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -18,8 +19,10 @@ class PropertyController extends Controller
             'min_sunlight' => $request->integer('min_sunlight') ?: null,
         ];
 
+        $properties = $this->propertyService->list($filters);
+
         return response()->json([
-            'data' => $this->propertyService->list($filters),
+            'data' => PropertyResource::collection($properties),
             'message' => '物件一覧を取得しました。',
         ]);
     }
