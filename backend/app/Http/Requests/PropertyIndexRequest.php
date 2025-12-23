@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class PropertyIndexRequest extends FormRequest
 {
@@ -33,5 +35,15 @@ class PropertyIndexRequest extends FormRequest
             'corner' => $this->boolean('corner'),
             'min_sunlight' => $this->filled('min_sunlight') ? (int) $this->input('min_sunlight') : null,
         ];
+    }
+
+    protected function failedValidation(Validator $validator): void
+    {
+        throw new HttpResponseException(
+            response()->json([
+                'message' => '入力内容に誤りがあります。',
+                'errors' => $validator->errors(),
+            ], 422)
+        );
     }
 }
