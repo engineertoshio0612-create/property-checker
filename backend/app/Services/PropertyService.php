@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\Property;
 use App\Queries\PropertyQuery;
 
 class PropertyService
