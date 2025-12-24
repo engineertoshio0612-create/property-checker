@@ -3,22 +3,16 @@
 namespace App\Services;
 
 use App\Models\Property;
+use App\Queries\PropertyQuery;
 
 class PropertyService
 {
+    public function __construct(private PropertyQuery $propertyQuery) {}
+
     public function list(array $filters = [])
     {
-        $query = Property::query();
-
-        if (!empty($filters['corner'])) {
-            $query->corner();
-        }
-
-        if (!empty($filters['min_sunlight'])) {
-            $query->minSunlight((int) $filters['min_sunlight']);
-        }
-
-        return $query
+        return $this->propertyQuery
+            ->build($filters)
             ->orderByDesc('id')
             ->get();
     }
