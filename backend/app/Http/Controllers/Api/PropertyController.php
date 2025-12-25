@@ -7,7 +7,6 @@ use App\Http\Resources\PropertyResource;
 use App\Http\Requests\PropertyIndexRequest;
 use App\Services\PropertyService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class PropertyController extends Controller
 {
@@ -15,12 +14,9 @@ class PropertyController extends Controller
 
     public function index(PropertyIndexRequest $request): JsonResponse
     {
-        $filters = [
-            'corner' => $request->boolean('corner'),
-            'min_sunlight' => $request->integer('min_sunlight') ?: null,
-        ];
-
-        $properties = $this->propertyService->list($filters);
+        $properties = $this->propertyService->list(
+            $request->filters()
+        );
 
         return response()->json([
             'data' => PropertyResource::collection($properties),

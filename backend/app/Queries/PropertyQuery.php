@@ -16,7 +16,7 @@ class PropertyQuery
         }
 
         if (!empty($filters['min_sunlight'])) {
-            $query->minSunlight((int) $filters['min_sunlight']);
+            $query->minSunlight($filters['min_sunlight']);
         }
 
         return $query;
