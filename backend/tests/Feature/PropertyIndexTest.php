@@ -60,4 +60,74 @@ class PropertyIndexTest extends TestCase
                 'errors' => ['min_sunlight'],
             ]);
     }
+
+    /**
+     * corner=0 は「全件」になる
+     */
+    public function testCornerFilterZeroReturnsAll(): void
+    {
+        Property::factory()->create(['is_corner' => true]);
+        Property::factory()->create(['is_corner' => false]);
+
+        $response = $this->getJson('/api/properties?corner=0');
+
+        $response->assertOk();
+        $this->assertCount(2, $response->json('data'));
+    }
+
+    /**
+     * min_sunlight=1 は「全件」になる（下限境界）
+     */
+    public function testMinSunlightOneReturnsAll(): void
+    {
+        Property::factory()->create(['sunlight_score' => 1]);
+        Property::factory()->create(['sunlight_score' => 5]);
+
+        $response = $this->getJson('/api/properties?min_sunlight=1');
+
+        $response->assertOk();
+        $this->assertCount(2, $response->json('data'));
+    }
+
+    /**
+     * min_sunlight=5 は「5のみ」になる（上限境界）
+     */
+    public function testMinSunlightFiveReturnsOnlyFive(): void
+    {
+        Property::factory()->create(['sunlight_score' => 5]);
+        Property::factory()->create(['sunlight_score' => 4]);
+
+        $response = $this->getJson('/api/properties?min_sunlight=5');
+
+        $response->assertOk();
+
+        $data = $response->json('data');
+        $this->assertCount(1, $data);
+        $this->assertSame(5, $data[0]['sunlight_score']);
+    }
+
+    /**
+     * corner + min_sunlight の複合条件
+     */
+    public function testCombinedFiltersWork(): void
+    {
+        // ヒットするのはこれだけ
+        Property::factory()->create(['is_corner' => true,  'sunlight_score' => 5]);
+
+        // 角部屋だけど日当たり足りない
+        Property::factory()->create(['is_corner' => true,  'sunlight_score' => 3]);
+
+        // 日当たりOKだけど角部屋じゃない
+        Property::factory()->create(['is_corner' => false, 'sunlight_score' => 5]);
+
+        $response = $this->getJson('/api/properties?corner=1&min_sunlight=4');
+
+        $response->assertOk();
+
+        $data = $response->json('data');
+        $this->assertCount(1, $data);
+        $this->assertTrue($data[0]['is_corner']);
+        $this->assertGreaterThanOrEqual(4, $data[0]['sunlight_score']);
+    }
+
 }
