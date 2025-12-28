@@ -12,7 +12,6 @@ class PropertyService
     {
         return $this->propertyQuery
             ->build($filters)
-            ->orderByDesc('id')
             ->get();
     }
 }

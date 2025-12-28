@@ -19,6 +19,8 @@ class PropertyQuery
             $query->minSunlight($filters['min_sunlight']);
         }
 
+        $query->orderByDesc('id');
+
         return $query;
     }
 }

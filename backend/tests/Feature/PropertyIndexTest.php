@@ -130,4 +130,20 @@ class PropertyIndexTest extends TestCase
         $this->assertGreaterThanOrEqual(4, $data[0]['sunlight_score']);
     }
 
+    /**
+     * 物件一覧APIの並び順（新しい順）
+     */
+    public function testPropertiesAreSortedByIdDesc(): void
+    {
+        $p1 = Property::factory()->create(); // id小
+        $p2 = Property::factory()->create(); // id大
+
+        $response = $this->getJson('/api/properties');
+
+        $response->assertOk();
+
+        $ids = array_column($response->json('data'), 'id');
+
+        $this->assertSame([$p2->id, $p1->id], array_slice($ids, 0, 2));
+    }
 }
