@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Facades\Property;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PropertyResource;
 use App\Http\Requests\PropertyIndexRequest;
@@ -14,9 +15,7 @@ class PropertyController extends Controller
 
     public function index(PropertyIndexRequest $request): JsonResponse
     {
-        $properties = $this->propertyService->list(
-            $request->filters()
-        );
+        $properties = Property::list($request->filters());
 
         return response()->json([
             'data' => PropertyResource::collection($properties),
