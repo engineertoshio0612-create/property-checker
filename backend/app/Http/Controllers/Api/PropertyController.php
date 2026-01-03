@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PropertyResource;
 use App\Http\Requests\PropertyIndexRequest;
+use App\Http\Requests\PropertyStoreRequest;
 use App\Services\PropertyService;
 use Illuminate\Http\JsonResponse;
 
@@ -20,5 +21,15 @@ class PropertyController extends Controller
             'data' => PropertyResource::collection($properties),
             'message' => '物件一覧を取得しました。',
         ]);
+    }
+
+    public function store(PropertyStoreRequest $request): JsonResponse
+    {
+        $property = $this->propertyService->create($request->payload());
+
+        return response()->json([
+            'data' => PropertyResource::make($property),
+            'message' => '物件を作成しました。',
+        ], 201);
     }
 }

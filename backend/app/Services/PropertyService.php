@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Property;
 use App\Queries\PropertyQuery;
 
 class PropertyService
@@ -13,5 +14,10 @@ class PropertyService
         return $this->propertyQuery
             ->build($filters)
             ->get();
+    }
+
+    public function create(array $payload): Property
+    {
+        return Property::create($payload);
     }
 }
