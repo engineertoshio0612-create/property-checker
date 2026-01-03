@@ -45,4 +45,28 @@ class PropertyStoreTest extends TestCase
 
         $this->assertSame('テスト物件', $response->json('data.name'));
     }
+
+    public function testStorePropertyWithInvalidSunlightScoreReturns422(): void
+    {
+        $payload = [
+            'name' => 'テスト物件',
+            'is_corner' => true,
+            'distance_convenience_store' => 300,
+            'sunlight_score' => 6, // NG（max:5）
+            'noise_score' => 2,
+        ];
+
+        $response = $this->postJson('/api/properties', $payload);
+
+        $response->assertStatus(422)
+            ->assertJsonStructure([
+                'message',
+                'errors' => ['sunlight_score'],
+            ]);
+
+        // 失敗したら当然DBに入らないことも確認（地味に効く）
+        $this->assertDatabaseMissing('properties', [
+            'name' => 'テスト物件',
+        ]);
+    }
 }
