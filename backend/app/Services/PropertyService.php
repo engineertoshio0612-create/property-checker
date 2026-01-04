@@ -20,4 +20,12 @@ class PropertyService
     {
         return Property::create($payload);
     }
+
+    public function update(Property $property, array $data): Property
+    {
+        $property->fill($data);
+        $property->save();
+
+        return $property->refresh();
+    }
 }
