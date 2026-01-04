@@ -28,4 +28,9 @@ class PropertyService
 
         return $property->refresh();
     }
+
+    public function delete(Property $property): void
+    {
+        $property->delete();
+    }
 }

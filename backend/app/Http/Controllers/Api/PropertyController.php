@@ -44,4 +44,13 @@ class PropertyController extends Controller
             'message' => '物件を更新しました。',
         ]);
     }
+
+    public function destroy(Property $property): JsonResponse
+    {
+        $this->propertyService->delete($property);
+
+        return response()->json([
+            'message' => '物件を削除しました。',
+        ]);
+    }
 }
