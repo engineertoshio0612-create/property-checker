@@ -10,7 +10,7 @@ class PropertyDestroyTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testDeletePropertyRemovesRecord(): void
+    public function testDeletePropertySoftDeletesRecord(): void
     {
         $property = Property::factory()->create();
 
@@ -19,8 +19,31 @@ class PropertyDestroyTest extends TestCase
         $res->assertOk()
             ->assertJsonStructure(['message']);
 
-        $this->assertDatabaseMissing('properties', [
+        $this->assertSoftDeleted('properties', [
             'id' => $property->id,
         ]);
+    }
+
+
+    public function testSoftDeletedPropertyIsNotListed(): void
+    {
+        $alive = Property::factory()->create();
+        $deleted = Property::factory()->create();
+        $deleted->delete();
+
+        $res = $this->getJson('/api/properties');
+
+        $res->assertOk();
+
+        $ids = array_column($res->json('data'), 'id');
+
+        $this->assertCount(1, $ids);
+        $this->assertSame([$alive->id], $ids);
+
+        $this->assertSoftDeleted('properties', [
+            'id' => $deleted->id,
+        ]);
+
+        $this->assertNotNull(Property::withTrashed()->find($deleted->id));
     }
 }
