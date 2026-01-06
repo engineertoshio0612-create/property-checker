@@ -35,6 +35,14 @@ class PropertyController extends Controller
         ], 201);
     }
 
+    public function show(Property $property): JsonResponse
+    {
+        return response()->json([
+            'data' => PropertyResource::make($property),
+            'message' => '物件詳細を取得しました。',
+        ]);
+    }
+
     public function update(PropertyUpdateRequest $request, Property $property): JsonResponse
     {
         $property = $this->propertyService->update($property, $request->payload());
