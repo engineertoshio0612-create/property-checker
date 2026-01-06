@@ -17,40 +17,37 @@ class PropertyController extends Controller
 
     public function index(PropertyIndexRequest $request): JsonResponse
     {
-        $properties = $this->propertyService->list($request->filters());
+        $properties = $this->propertyService->list($request->filters()); // paginate(10)
 
-        return response()->json([
-            'data' => PropertyResource::collection($properties),
-            'message' => '物件一覧を取得しました。',
-        ]);
+        return PropertyResource::collection($properties)
+            ->additional(['message' => '物件一覧を取得しました。'])
+            ->response();
     }
 
     public function store(PropertyStoreRequest $request): JsonResponse
     {
         $property = $this->propertyService->create($request->payload());
 
-        return response()->json([
-            'data' => PropertyResource::make($property),
-            'message' => '物件を作成しました。',
-        ], 201);
+        return PropertyResource::make($property)
+            ->additional(['message' => '物件を作成しました。'])
+            ->response()
+            ->setStatusCode(201);
     }
 
     public function show(Property $property): JsonResponse
     {
-        return response()->json([
-            'data' => PropertyResource::make($property),
-            'message' => '物件詳細を取得しました。',
-        ]);
+        return PropertyResource::make($property)
+            ->additional(['message' => '物件詳細を取得しました。'])
+            ->response();
     }
 
     public function update(PropertyUpdateRequest $request, Property $property): JsonResponse
     {
         $property = $this->propertyService->update($property, $request->payload());
 
-        return response()->json([
-            'data' => PropertyResource::make($property),
-            'message' => '物件を更新しました。',
-        ]);
+        return PropertyResource::make($property)
+            ->additional(['message' => '物件を更新しました。'])
+            ->response();
     }
 
     public function destroy(Property $property): JsonResponse
@@ -59,6 +56,6 @@ class PropertyController extends Controller
 
         return response()->json([
             'message' => '物件を削除しました。',
-        ]);
+        ], 200);
     }
 }

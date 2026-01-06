@@ -13,7 +13,7 @@ class PropertyService
     {
         return $this->propertyQuery
             ->build($filters)
-            ->get();
+            ->paginate(10);
     }
 
     public function create(array $payload): Property

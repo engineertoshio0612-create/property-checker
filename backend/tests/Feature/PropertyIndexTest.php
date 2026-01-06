@@ -23,12 +23,54 @@ class PropertyIndexTest extends TestCase
 
         $response->assertOk()
             ->assertJsonStructure([
-                'data',
+                'data' => [
+                    '*' => [
+                        'id',
+                        'name',
+                        'is_corner',
+                        'distance_convenience_store',
+                        'sunlight_score',
+                        'noise_score',
+                        'created_at',
+                        'updated_at',
+                    ],
+                ],
+                'links' => [
+                    'first',
+                    'last',
+                    'prev',
+                    'next',
+                ],
+                'meta' => [
+                    'current_page',
+                    'last_page',
+                    'per_page',
+                    'total',
+                ],
                 'message',
             ]);
 
-        $this->assertCount(3, $response->json('data'));
+        // data は「配列」であること
+        $this->assertIsArray($response->json('data'));
+
+        $this->assertSame(10, $response->json('meta.per_page'));
+
+        $this->assertSame(3, $response->json('meta.total'));
     }
+
+    public function testGetPropertiesCanMoveToNextPage(): void
+    {
+        Property::factory()->count(15)->create();
+
+        $res1 = $this->getJson('/api/properties?page=1')->assertOk();
+        $this->assertCount(10, $res1->json('data'));
+
+        $res2 = $this->getJson('/api/properties?page=2')->assertOk();
+        $this->assertCount(5, $res2->json('data'));
+
+        $this->assertSame(2, $res2->json('meta.current_page'));
+    }
+
 
     /**
      * フィルタで角部屋のみ返却
