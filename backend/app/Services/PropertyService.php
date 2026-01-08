@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\Property;
 use App\Queries\PropertyQuery;
+use Illuminate\Support\Facades\DB;
+use RuntimeException;
 
 class PropertyService
 {
@@ -32,5 +34,27 @@ class PropertyService
     public function delete(Property $property): void
     {
         $property->delete();
+    }
+
+    public function createWithMultipleStepsWithoutTransaction(array $payload): void
+    {
+        $property = Property::create($payload);
+
+        $property->name = $property->name . '_UPDATED';
+        $property->save();
+
+        throw new RuntimeException('ダミー例外（transaction無し）');
+    }
+
+    public function createWithMultipleStepsWithTransaction(array $payload): void
+    {
+        DB::transaction(function () use ($payload) {
+            $property = Property::create($payload);
+
+            $property->name = $property->name . '_UPDATED';
+            $property->save();
+
+            throw new RuntimeException('ダミー例外（transaction有り）');
+        });
     }
 }
