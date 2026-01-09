@@ -5,7 +5,7 @@ namespace App\Queries;
 use App\Models\Property;
 use Illuminate\Database\Eloquent\Builder;
 
-class PropertyQuery
+class EloquentPropertyQuery
 {
     public function build(array $filters = []): Builder
     {

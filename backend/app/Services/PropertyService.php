@@ -3,13 +3,13 @@
 namespace App\Services;
 
 use App\Models\Property;
-use App\Queries\PropertyQuery;
+use App\Queries\PropertyQueryInterface;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
 class PropertyService
 {
-    public function __construct(private PropertyQuery $propertyQuery) {}
+    public function __construct(private PropertyQueryInterface $propertyQuery) {}
 
     public function list(array $filters = [])
     {

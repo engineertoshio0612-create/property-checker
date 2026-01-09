@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Queries\EloquentPropertyQuery;
+use App\Queries\PropertyQueryInterface;
 use App\Services\PropertyService;
 use Illuminate\Support\ServiceProvider;
 
@@ -13,6 +15,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(PropertyService::class);
+        $this->app->bind(PropertyQueryInterface::class, EloquentPropertyQuery::class);
     }
 
     /**
