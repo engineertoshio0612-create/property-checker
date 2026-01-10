@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Facades\PropertyFinder;
 use App\Http\Controllers\Controller;
-use App\Models\Property;
 use App\Http\Resources\PropertyResource;
 use App\Http\Requests\PropertyIndexRequest;
 use App\Http\Requests\PropertyStoreRequest;
 use App\Http\Requests\PropertyUpdateRequest;
+use App\Models\Property;
 use App\Services\PropertyService;
 use Illuminate\Http\JsonResponse;
 
@@ -17,7 +18,7 @@ class PropertyController extends Controller
 
     public function index(PropertyIndexRequest $request): JsonResponse
     {
-        $properties = $this->propertyService->list($request->filters()); // paginate(10)
+        $properties = PropertyFinder::list($request->filters()); // paginate(10)
 
         return PropertyResource::collection($properties)
             ->additional(['message' => '物件一覧を取得しました。'])
