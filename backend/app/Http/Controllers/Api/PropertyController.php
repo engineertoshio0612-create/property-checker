@@ -18,7 +18,7 @@ class PropertyController extends Controller
 
     public function index(PropertyIndexRequest $request): JsonResponse
     {
-        $properties = PropertyFinder::list($request->filters()); // paginate(10)
+        $properties = $this->propertyService->list($request->filters()); // paginate(10)
 
         return PropertyResource::collection($properties)
             ->additional(['message' => '物件一覧を取得しました。'])
